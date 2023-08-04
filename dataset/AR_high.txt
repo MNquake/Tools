@@ -1,0 +1,6 @@
+dataname: AR
+url:
+X (uint8): 2600 x 19800, 19800 = 165*120, rowmajor
+y (uint8): 1-100, each people has 200 images
+
+

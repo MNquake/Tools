@@ -1,0 +1,4 @@
+dataname: CMUPIE
+url:
+X (uint8): 2856 x 1024, 1024 = 32*32, colmajor
+y (uint8): 1-68, each people has 42 images
