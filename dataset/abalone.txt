@@ -1,0 +1,4 @@
+dataname: abalone
+url: 
+X (double): 4177 x 8
+y (uint8): 1-3, 1528, 1307, 1342
