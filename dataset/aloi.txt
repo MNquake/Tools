@@ -1,0 +1,6 @@
+dataname: aloi
+url: 
+X (double): 108000 x 128
+y (uint16): 0-999, each class has exactly 108 samples
+
+sparse matrix

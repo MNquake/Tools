@@ -1,0 +1,4 @@
+dataname: ar
+url:
+X (uint8): 2600 x 256, 256 = 16*16, colmajor
+y (uint8): 1-100, each people has 200 images
