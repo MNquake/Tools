@@ -1,20 +1,20 @@
 %% 提取xlsx文件中结果最好的项
 i = 1;
-xlspath = 'G:/Data/RFKM/new/newRFKM.xlsx';
-sheetnames = 'yale32';
-range = sprintf('%s%d:%s%d', char('A'),1,char('Y'), 1680);
+xlspath = 'G:/Data/RFKM/new/newRFKM(噪音数据-噪音标签为0-去噪).xlsx';
+sheetnames = 'MSRA25-1';
+range = sprintf('%s%d:%s%d', char('A'),1,char('Y'), 1920);
 data = readmatrix(xlspath,'Sheet', sheetnames, 'Range', range);
 [m,n] = size(data);
 
 excel = actxserver('Excel.Application');
 workbook = excel.Workbooks.Open('G:/Data/RFKM/new/best.xlsx');
-worksheet = workbook.Sheets.Item(1);
+worksheet = workbook.Sheets.Item(3);
 
-%iter output purity ari acc nmi
-MaxPurity = [0, 0 ,0 ,0, 0, 0]; 
-MaxARI = [0, 0 ,0 ,0, 0, 0];
-MaxACC = [0, 0 ,0 ,0, 0, 0];
-MaxNMI = [0, 0 ,0 ,0, 0, 0];
+%iter output purity ari acc nmi noiseacc
+MaxPurity = [0, 0 ,0 ,0, 0, 0, 0]; 
+MaxARI = [0, 0 ,0 ,0, 0, 0, 0];
+MaxACC = [0, 0 ,0 ,0, 0, 0, 0];
+MaxNMI = [0, 0 ,0 ,0, 0, 0, 0];
 
 MaxPurity_param = [0, 0 ,0]; 
 MaxARI_param = [0, 0 ,0];
@@ -25,7 +25,7 @@ while 1>0
         break;
     end
     param = data(i,1:3);
-    result = data(i+1:i+6,1:25);
+    result = data(i+1:i+7,1:25);
     
     for t = 1 : 1 : 25
         Purity = result(3,t);
@@ -33,26 +33,26 @@ while 1>0
         ACC = result(5,t);
         NMI = result(6,t);
         if Purity > MaxPurity(3)
-            MaxPurity = [result(1,t), result(2,t), result(3,t), result(4,t), result(5,t), result(6,t)];
+            MaxPurity = [result(1,t), result(2,t), result(3,t), result(4,t), result(5,t), result(6,t), result(7,t)];
             MaxPurity_param = param; 
         end
 
         if ARI > MaxARI(4)
-            MaxARI = [result(1,t), result(2,t), result(3,t), result(4,t), result(5,t), result(6,t)];
+            MaxARI = [result(1,t), result(2,t), result(3,t), result(4,t), result(5,t), result(6,t), result(7,t)];
             MaxARI_param = param;
         end
 
         if ACC > MaxACC(5)
-            MaxACC = [result(1,t), result(2,t), result(3,t), result(4,t), result(5,t), result(6,t)];
+            MaxACC = [result(1,t), result(2,t), result(3,t), result(4,t), result(5,t), result(6,t), result(7,t)];
             MaxACC_param = param;
         end
 
         if NMI > MaxNMI(6)
-            MaxNMI = [result(1,t), result(2,t), result(3,t), result(4,t), result(5,t), result(6,t)];
+            MaxNMI = [result(1,t), result(2,t), result(3,t), result(4,t), result(5,t), result(6,t), result(7,t)];
             MaxNMI_param = param;
         end
     end
-    i = i + 7;
+    i = i + 8;
 end
 
 begin = ['A',num2str(1)];
@@ -85,7 +85,7 @@ range.Value = MaxPurity_param;
 workbook.Save();
 
 begin = ['A',num2str(4)];
-ends = ['F',num2str(4)];
+ends = ['G',num2str(4)];
 ff = [begin,':',ends];
 range = worksheet.Range(ff);
 range.Value = MaxPurity;
@@ -108,7 +108,7 @@ range.Value = MaxARI_param;
 workbook.Save();
 
 begin = ['A',num2str(7)];
-ends = ['F',num2str(7)];
+ends = ['G',num2str(7)];
 ff = [begin,':',ends];
 range = worksheet.Range(ff);
 range.Value = MaxARI;
@@ -131,7 +131,7 @@ range.Value = MaxACC_param;
 workbook.Save();
 
 begin = ['A',num2str(10)];
-ends = ['F',num2str(10)];
+ends = ['G',num2str(10)];
 ff = [begin,':',ends];
 range = worksheet.Range(ff);
 range.Value = MaxACC;
@@ -154,7 +154,7 @@ range.Value = MaxNMI_param;
 workbook.Save();
 
 begin = ['A',num2str(13)];
-ends = ['F',num2str(13)];
+ends = ['G',num2str(13)];
 ff = [begin,':',ends];
 range = worksheet.Range(ff);
 range.Value = MaxNMI;
