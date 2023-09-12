@@ -1,48 +1,53 @@
-function [F,obj_FCM,iter] = FuzzyCmeans(data, c, r)
+%Fuzzy C-means Algorithm in GnuOctave (V.3.6.4)
+%Fuzzy type 1 C-means algorithm
+%Inputs:
+%******c: Number of clusters
+%******X: Data Matrix N_samples*N_features
+%******U_up: U updating function 
+%******m: Fuzzifier as a real number
+%******metric: Distance metric as a function (by default Euclidean)
+%******Max: Maximum number of iterations
+%******tol: Tolerance  
+%***********************************************
+%Outputs: 
+%******prediction: Predicted labels of data
+%******v: Center  of clusters as a matrix c*N_features
+%***********************************************
+function [prediction,v,k] = FuzzyCmeans(c, X, m, metric, Max, tol)
+[n, no] = size(X);
+U = zeros([c, n]);
+v = repmat(max(X), c, 1).*rand([c, no]);
+U = rand([c, n]);
 
-    % data: d*n
-    % c: number of cluster
-    % r: membership matrix coefficient
+for j = 1:n
+      U(:, j) = U(:, j)./sum(U(:, j));      
+end  
 
-    [d, n] = size(data);
+for i = 1:c
+      v(i, :) = sum((X(:, :).*repmat(U(i, :)'.^m, 1, no)),1)./sum(U(i, :).^m);
+end
 
-    F = rand(n, c);              %随机模糊矩阵
-    row_sum= sum(F, 2);
-    F = F./(row_sum*ones(1, c));   %约束条件：每一行累加为1
-
-%     randIdx = randperm(n,c);
-%     center = data(:,randIdx);
-    G = F.^r;
-    center = (G'*data')./(sum(G',2)*ones(1,size(data',2)));
-    center = center';
-
-    iter = 1;
-
-%     dist = distfcm(data', center');
-    obj_FCM(iter) = 0;
-
-    while 1 > 0
-        
-        %% update F
-        dist = distfcm(data', center');
-        for i = 1 : 1 : n
-            for j = 1 : 1 : c
-                d = 0;
-                for k = 1 : 1 : c
-                    d = d + dist(i,k)^(1/(1-r));
-                end
-                F(i,j) = (dist(i,j)^(1/(1-r)))/d;
-            end
-        end
-        %% update c
-        G = F.^r;
-        center = (G'*data')./(sum(G',2)*ones(1,size(data',2)));
-        center = center';
-        iter = iter + 1;
-        dist = distfcm(data', center');
-        obj_FCM(iter) = sum(sum((dist.^2).*(F.^r)));
-        if (abs(obj_FCM(iter)-obj_FCM(iter-1)) < 10^-5)
-            break;
-        end    
+v_old = v;
+delta = 1e4;
+k = 0;
+while  (k<Max && delta>tol)
+    for i = 1:c
+      for j = 1:n
+        U(i, j) = 1/sum((metric(X(j, :), v(i, :))./metric(X(j, :), v)).^(2/(m-1)));
+      end
     end
+    for i = 1:c
+       v(i, :) = sum((X(:, :).*repmat(U(i, :)'.^m, 1, no)), 1)./sum(U(i, :).^m);  
+    end
+v_new = v;
+delta = max(max(abs(v_new-v_old)));
+v_old = v;
+
+k = k+1;
+end
+prediction = zeros([1, n]);
+for i = 1:n
+   [M, prediction(i)]=max(U(:, i));
+end
+
 end

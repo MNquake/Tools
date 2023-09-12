@@ -12,7 +12,7 @@ function [F,obj_FCM,iter] = FuzzyCmeans(data, c, r)
 
 %     randIdx = randperm(n,c);
 %     center = data(:,randIdx);
-    G = F^r;
+    G = F.^r;
     center = (G'*data')./(sum(G',2)*ones(1,size(data',2)));
     center = center';
 
@@ -35,8 +35,8 @@ function [F,obj_FCM,iter] = FuzzyCmeans(data, c, r)
             end
         end
         %% update c
-        G = F^r;
-        center = (F'*data')./(sum(F',2)*ones(1,size(data',2)));
+        G = F.^r;
+        center = (G'*data')./(sum(G',2)*ones(1,size(data',2)));
         center = center';
         iter = iter + 1;
         dist = distfcm(data', center');
